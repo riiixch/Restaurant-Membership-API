@@ -1,0 +1,9 @@
+export function RandomID(length: Number) {
+    if (!length || Number(length) <= 0) length = 256;
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let result = '';
+    for (let i = 0; i < Number(length); i++) {
+        result += characters.charAt(Math.floor(Math.random() * characters.length));
+    }
+    return result;
+}

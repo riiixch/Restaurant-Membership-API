@@ -1,12 +1,6 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
     provider = "prisma-client-js"
-    //  output   = "../generated/prisma"
+    //output   = "../generated/prisma"
 }
 
 datasource db {
@@ -14,13 +8,44 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
-model Account {
-    user_id String @id @default(auto()) @map("_id") @db.ObjectId
-    username String
-    password String
+model User {
+    user_id   String    @id @default(auto()) @map("_id") @db.ObjectId
+    username  String    @unique
+    email     String    @unique
+    password  String
+    fname     String?
+    lanme     String?
+    telephone String?
+    birthdate DateTime?
+    createAt  DateTime  @default(now())
+    car_id    String?   @db.ObjectId
+    card      Card?     @relation("UserToCard", fields: [car_id], references: [car_id])
 }
 
-model Membership {
-    mem_id String @id @default(auto()) @map("_id") @db.ObjectId
-    mem_exp String
+model Card {
+    car_id      String        @id @default(auto()) @map("_id") @db.ObjectId
+    car_number  String        @unique
+    car_point   Float         @default(0.00)
+    car_fee     Float         @default(0.00)
+    createAt    DateTime      @default(now())
+    tie_id      String        @db.ObjectId
+    tier        Tier          @relation("CardToTier", fields: [tie_id], references: [tie_id])
+    user        User[]        @relation("UserToCard")
+    transaction Transaction[] @relation("TransactionToCard")
+}
+
+model Tier {
+    tie_id       String @id @default(auto()) @map("_id") @db.ObjectId
+    tie_name     String
+    tie_discount Float  @default(0.00)
+    card         Card[] @relation("CardToTier")
+}
+
+model Transaction {
+    tra_id         String   @id @default(auto()) @map("_id") @db.ObjectId
+    tra_amount     Float
+    tra_point_earn Int
+    createAt       DateTime @default(now())
+    car_id         String   @db.ObjectId
+    card           Card     @relation("TransactionToCard", fields: [car_id], references: [car_id])
 }
