@@ -31,7 +31,7 @@ export default async function authLogin(req:Request, res:Response) {
             return;
         }
 
-        const isMatch = bcrypt.compare(password, user.password);
+        const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
             res.json({ code: 400, msg: `รหัสผ่านไม่ถูกต้อง` });
             return;

@@ -30,7 +30,7 @@ export default async function authRegister(req:Request, res:Response) {
             return;
         } else
         if (password !== confirm_password) {
-            res.json({ code: 400, msg: `กรุณากรอก รหัสผ่านไม่ตรงกัน` });
+            res.json({ code: 400, msg: `กรุณากรอก รหัสผ่านให้ตรงกัน` });
             return;
         }
 

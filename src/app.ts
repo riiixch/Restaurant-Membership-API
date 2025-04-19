@@ -9,7 +9,7 @@ import userRouter from './router/user';
 const app = express();
 
 app.use(cors({
-    origin: ['http://localhost:8080'], // อนุญาตแค่ origin นี้ / IP ที่อนุญาต
+    origin: ['http://localhost:8080', 'http://localhost:64316'], // อนุญาตแค่ origin นี้ / IP ที่อนุญาต
     credentials: true, // อนุญาตส่ง Session ไปกลับ อนุญาตให้ส่ง cookie หรือ header ที่มี credential
     methods: ['GET', 'POST', 'PUT', 'DELETE'], // อนุญาตเฉพาะ method เหล่านี้
     allowedHeaders: ['Content-Type', 'Authorization'], // เฉพาะ header ที่อนุญาตให้ถูกส่งมา
