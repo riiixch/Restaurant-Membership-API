@@ -28,8 +28,8 @@ model Card {
     car_point   Float         @default(0.00)
     car_fee     Float         @default(0.00)
     createAt    DateTime      @default(now())
-    tie_id      String        @db.ObjectId
-    tier        Tier          @relation("CardToTier", fields: [tie_id], references: [tie_id])
+    tie_id      String?       @db.ObjectId
+    tier        Tier?         @relation("CardToTier", fields: [tie_id], references: [tie_id])
     user        User[]        @relation("UserToCard")
     transaction Transaction[] @relation("TransactionToCard")
 }
