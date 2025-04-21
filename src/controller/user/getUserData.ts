@@ -30,8 +30,6 @@ export default async function getUserData(req: Request, res:Response) {
             res.json({ code: 400, msg: `ไม่มีบัญชีผู้ใช้งานนี้` });
             return;
         }
-        
-        log(userData)
 
         const user = {
             user_id: userData.user_id,

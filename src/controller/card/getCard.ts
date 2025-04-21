@@ -7,7 +7,7 @@ import { decodeJWT } from "../../module/JWT";
 import { log } from "console";
 import { RandomNumber } from "../../module/RandomNumber";
 
-export default async function newCard(req: Request, res:Response) {
+export default async function getCard(req: Request, res:Response) {
     try {
         const token = req.headers.authorization?.split(' ')[1];
         if (!token || !ValidateInput(token, 'text')) {
@@ -51,8 +51,6 @@ export default async function newCard(req: Request, res:Response) {
                 car_id: cardData.car_id,
             }
         });
-
-        log(cardData)
 
         res.json({ code: 200, msg: `สมัครการ์ดสำเร็จ` });
         return;

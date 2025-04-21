@@ -1,6 +1,6 @@
 import express from "express"
 import getUserData from "../controller/user/getUserData";
-import newCard from "../controller/user/newCard";
+import newCard from "../controller/card/newCard";
 
 const userRouter = express.Router();
 
