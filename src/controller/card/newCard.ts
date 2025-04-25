@@ -27,11 +27,11 @@ export default async function newCard(req: Request, res:Response) {
                 card: true,
             }
         });
+
         if (!userData) {
             res.json({ code: 400, msg: `ไม่มีบัญชีผู้ใช้งานนี้` });
             return;
-        }
-
+        } else
         if (userData.card != null) {
             res.json({ code: 400, msg: `บัญชีผู้ใช้งานนี้มีการ์ดแล้ว` });
             return;
@@ -51,8 +51,6 @@ export default async function newCard(req: Request, res:Response) {
                 car_id: cardData.car_id,
             }
         });
-
-        log(cardData)
 
         res.json({ code: 200, msg: `สมัครการ์ดสำเร็จ` });
         return;

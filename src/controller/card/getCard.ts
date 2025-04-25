@@ -5,7 +5,6 @@ import ValidateInput from "../../module/ValidateInput";
 import { decodeJWT } from "../../module/JWT";
 
 import { log } from "console";
-import { RandomNumber } from "../../module/RandomNumber";
 
 export default async function getCard(req: Request, res:Response) {
     try {
@@ -27,32 +26,17 @@ export default async function getCard(req: Request, res:Response) {
                 card: true,
             }
         });
+
         if (!userData) {
             res.json({ code: 400, msg: `ไม่มีบัญชีผู้ใช้งานนี้` });
             return;
-        }
-
-        if (userData.card != null) {
+        } else
+        if (userData.card == null) {
             res.json({ code: 400, msg: `บัญชีผู้ใช้งานนี้มีการ์ดแล้ว` });
             return;
         }
 
-        const cardData = await prisma.card.create({
-            data: {
-                car_number: RandomNumber(16),
-            }
-        });
-
-        await prisma.user.update({
-            where: {
-                user_id: userData.user_id,
-            },
-            data: {
-                car_id: cardData.car_id,
-            }
-        });
-
-        res.json({ code: 200, msg: `สมัครการ์ดสำเร็จ` });
+        res.json({ code: 200, card: userData.card });
         return;
     } catch (error) {
         log(`เกิดข้อผิดพลาด: ${error}`);
