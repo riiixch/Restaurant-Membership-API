@@ -9,7 +9,7 @@ import userRouter from './router/user';
 const app = express();
 
 app.use(cors({
-    origin: ['http://localhost:57382', 'http://localhost:55356'], // อนุญาตแค่ origin นี้ / IP ที่อนุญาต
+    origin: true, // อนุญาตแค่ origin นี้ / IP ที่อนุญาต
     credentials: true, // อนุญาตส่ง Session ไปกลับ อนุญาตให้ส่ง cookie หรือ header ที่มี credential
     methods: ['GET', 'POST', 'PUT', 'DELETE'], // อนุญาตเฉพาะ method เหล่านี้
     allowedHeaders: ['Content-Type', 'Authorization'], // เฉพาะ header ที่อนุญาตให้ถูกส่งมา
@@ -63,6 +63,7 @@ app.use(helmet({
     hidePoweredBy: true, // ซ่อน header `X-Powered-By: Express` เพื่อป้องกันข้อมูลรั่ว
     xssFilter: true, // (เลิกใช้แล้วใน Helmet 5+) เคยใช้ตั้ง X-XSS-Protection แต่ปัจจุบัน browser จัดการเอง
 }));
+
 app.use(express.json());
 app.use(fileUpload());
 

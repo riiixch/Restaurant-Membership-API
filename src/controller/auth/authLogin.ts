@@ -21,25 +21,35 @@ export default async function authLogin(req:Request, res:Response) {
         }
 
         const prisma = new PrismaClient()
-        const user = await prisma.user.findUnique({
+        const user = await prisma.user.findMany({
             where: {
-                username: username,
+                OR: [
+                    {
+                        username: username,
+                    },
+                    {
+                        email: username,
+                    },
+                    {
+                        phone: username,
+                    }
+                ]
             }
         });
-        if (!user) {
+        if (user.length !== 1) {
             res.json({ code: 400, msg: `ไม่มีข้อมูล ชื่อผู้ใช้งาน` });
             return;
         }
 
-        const isMatch = await bcrypt.compare(password, user.password);
+        const isMatch = await bcrypt.compare(password, user[0].password);
         if (!isMatch) {
             res.json({ code: 400, msg: `รหัสผ่านไม่ถูกต้อง` });
             return;
         }
 
         const data = {
-            user_id: user.user_id,
-            createAt: user.createAt,
+            user_id: user[0].user_id,
+            createAt: user[0].createAt,
         }
 
         const token = await encodeJWT(data);

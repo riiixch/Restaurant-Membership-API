@@ -1,9 +1,11 @@
-type InputType = 'text' | 'email' | 'number' | 'boolean' | 'date' | 'array';
+type InputType = 'text' | 'phone' | 'email' | 'number' | 'boolean' | 'date' | 'array';
 
 export default function ValidateInput(value: any, type: InputType): boolean {
     switch (type) {
         case 'text':
             return typeof value === 'string' && value.trim().length > 0;
+        case 'phone':
+            return typeof value === 'string' && value.trim().length > 0 && value.trim().length === 10;
         case 'email':
             if (typeof value !== 'string') return false;
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

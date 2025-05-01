@@ -11,7 +11,7 @@ import { log } from "console";
 
 export default async function authRegister(req:Request, res:Response) {
     try {
-        const { username, email, password, confirm_password } = req.body;
+        const { username, email, phone, fname, lname, password, confirm_password } = req.body;
 
         if (!ValidateInput(username, 'text')) {
             res.json({ code: 400, msg: `กรุณากรอก ชื่อผู้ใช้งาน` });
@@ -19,6 +19,18 @@ export default async function authRegister(req:Request, res:Response) {
         } else
         if (!ValidateInput(email, 'email')) {
             res.json({ code: 400, msg: `กรุณากรอก ชื่อผู้ใช้งาน` });
+            return;
+        } else
+        if (!ValidateInput(phone, 'phone')) {
+            res.json({ code: 400, msg: `กรุณากรอก เบอร์โทรศัพท์` });
+            return;
+        } else
+        if (!ValidateInput(fname, 'text')) {
+            res.json({ code: 400, msg: `กรุณากรอก ชื่อจริง` });
+            return;
+        } else
+        if (!ValidateInput(lname, 'text')) {
+            res.json({ code: 400, msg: `กรุณากรอก นามสกุล` });
             return;
         } else
         if (!ValidateInput(password, 'text')) {
@@ -53,6 +65,15 @@ export default async function authRegister(req:Request, res:Response) {
             res.json({ code: 400, msg: `อีเมลนี้ถูกใช้งานไปแล้ว` });
             return;
         }
+        const phoneExiting = await prisma.user.findUnique({
+            where: {
+                phone: phone,
+            }
+        });
+        if (phoneExiting) {
+            res.json({ code: 400, msg: `เบอรืโทรศัพท์นี้ถูกใช้งานไปแล้ว` });
+            return;
+        }
 
         const saltRound = Number(process.env.SALT_ROUND) > 0 ? Number(process.env.SALT_ROUND) : 12;
         const hashPassword = await bcrypt.hash(password, saltRound);
@@ -61,6 +82,9 @@ export default async function authRegister(req:Request, res:Response) {
             data: {
                 username: username,
                 email: email,
+                phone: phone,
+                fname: fname,
+                lname: lname,
                 password: hashPassword,
             }
         });

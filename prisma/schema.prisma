@@ -9,43 +9,39 @@ datasource db {
 }
 
 model User {
-    user_id   String    @id @default(auto()) @map("_id") @db.ObjectId
-    username  String    @unique
-    email     String    @unique
-    password  String
-    fname     String?
-    lanme     String?
-    telephone String?
-    birthdate DateTime?
-    createAt  DateTime  @default(now())
-    car_id    String?   @db.ObjectId
-    card      Card?     @relation("UserToCard", fields: [car_id], references: [car_id])
-}
-
-model Card {
-    car_id      String        @id @default(auto()) @map("_id") @db.ObjectId
-    car_number  String        @unique
-    car_point   Float         @default(0.00)
-    car_fee     Float         @default(0.00)
-    createAt    DateTime      @default(now())
-    tie_id      String?       @db.ObjectId
-    tier        Tier?         @relation("CardToTier", fields: [tie_id], references: [tie_id])
-    user        User[]        @relation("UserToCard")
-    transaction Transaction[] @relation("TransactionToCard")
-}
-
-model Tier {
-    tie_id       String @id @default(auto()) @map("_id") @db.ObjectId
-    tie_name     String
-    tie_discount Float  @default(0.00)
-    card         Card[] @relation("CardToTier")
+    user_id  String   @id @default(auto()) @map("_id") @db.ObjectId
+    username String   @unique
+    email    String   @unique
+    phone    String   @unique
+    password String
+    fname    String
+    lname    String
+    profile  String?
+    role     String   @default("member")
+    createAt DateTime @default(now())
 }
 
 model Transaction {
-    tra_id         String   @id @default(auto()) @map("_id") @db.ObjectId
-    tra_amount     Float
-    tra_point_earn Int
-    createAt       DateTime @default(now())
-    car_id         String   @db.ObjectId
-    card           Card     @relation("TransactionToCard", fields: [car_id], references: [car_id])
+    tra_id       String   @id @default(auto()) @map("_id") @db.ObjectId
+    tra_point    Float
+    tra_type     String
+    tra_descript String
+    createAt     DateTime @default(now())
+}
+
+model Reward {
+    rew_id       String   @id @default(auto()) @map("_id") @db.ObjectId
+    rew_name     String
+    rew_cost     Float
+    rew_descript String
+    rew_img      String[]
+    createAt     DateTime @default(now())
+}
+
+model RedeemHistory {
+    red_id   String   @id @default(auto()) @map("_id") @db.ObjectId
+    red_code String
+    user_id  String
+    rew_id   String
+    createAt DateTime @default(now())
 }
