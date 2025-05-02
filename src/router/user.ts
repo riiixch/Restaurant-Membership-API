@@ -1,10 +1,8 @@
 import express from "express"
-import getUserData from "../controller/user/getUserData";
-import newCard from "../controller/card/newCard";
+import getData from "../controller/user/getData";
 
 const userRouter = express.Router();
 
-userRouter.get('/data', getUserData);
-userRouter.post('/card', newCard);
+userRouter.get('/data', getData);
 
 export default userRouter;

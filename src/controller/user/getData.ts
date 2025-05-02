@@ -6,7 +6,7 @@ import { decodeJWT } from "../../module/JWT";
 
 import { log } from "console";
 
-export default async function getCard(req: Request, res:Response) {
+export default async function getData(req: Request, res:Response) {
     try {
         const token = req.headers.authorization?.split(' ')[1];
         if (!token || !ValidateInput(token, 'text')) {
@@ -21,22 +21,26 @@ export default async function getCard(req: Request, res:Response) {
         const userData = await prisma.user.findUnique({
             where: {
                 user_id: user_id,
-            },
-            include: {
-                card: true,
             }
         });
-
         if (!userData) {
             res.json({ code: 400, msg: `ไม่มีบัญชีผู้ใช้งานนี้` });
             return;
-        } else
-        if (userData.card == null) {
-            res.json({ code: 400, msg: `บัญชีผู้ใช้งานนี้มีการ์ดแล้ว` });
-            return;
         }
 
-        res.json({ code: 200, card: userData.card });
+        const user = {
+            user_id: userData.user_id,
+            username: userData.username,
+            email: userData.email,
+            phone: userData.phone,
+            fname: userData.fname,
+            lname: userData.lname,
+            profile: userData.profile,
+            role: userData.role,
+            createAt: userData.createAt,
+        }
+
+        res.json({ code: 200, msg: `ดึงข้อมูลผู้ใช้งานสำเร็จ`, user: user });
         return;
     } catch (error) {
         log(`เกิดข้อผิดพลาด: ${error}`);

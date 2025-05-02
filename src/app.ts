@@ -64,8 +64,8 @@ app.use(helmet({
     xssFilter: true, // (เลิกใช้แล้วใน Helmet 5+) เคยใช้ตั้ง X-XSS-Protection แต่ปัจจุบัน browser จัดการเอง
 }));
 
-app.use(express.json());
 app.use(fileUpload());
+app.use(express.json());
 
 app.use('/api/auth', authRouter);
 
