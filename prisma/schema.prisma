@@ -27,6 +27,7 @@ model Transaction {
     tra_type     String
     tra_descript String
     createAt     DateTime @default(now())
+    user_id      String
 }
 
 model Reward {

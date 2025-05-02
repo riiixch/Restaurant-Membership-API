@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
 import { PrismaClient } from "@prisma/client";
 
 import ValidateInput from "../../module/ValidateInput";
@@ -6,7 +6,7 @@ import { decodeJWT } from "../../module/JWT";
 
 import { log } from "console";
 
-export default async function getData(req: Request, res:Response) {
+export default async function isAdmin(req: Request, res: Response, next:NextFunction) {
     try {
         const token = req.headers.authorization?.split(' ')[1];
         if (!token || !ValidateInput(token, 'text')) {
@@ -28,20 +28,7 @@ export default async function getData(req: Request, res:Response) {
             return;
         }
 
-        const user = {
-            user_id: userData.user_id,
-            username: userData.username,
-            email: userData.email,
-            phone: userData.phone,
-            fname: userData.fname,
-            lname: userData.lname,
-            profile: userData.profile,
-            role: userData.role,
-            createAt: userData.createAt,
-        }
-
-        res.json({ code: 200, msg: `ดึงข้อมูลผู้ใช้งานสำเร็จ`, user: user });
-        return;
+        next();
     } catch (error) {
         log(`เกิดข้อผิดพลาด: ${error}`);
         res.json({ code: 400, msg: `ข้อมูลไม่ถูกต้อง` });

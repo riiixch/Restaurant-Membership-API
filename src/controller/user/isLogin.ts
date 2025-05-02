@@ -4,15 +4,16 @@ import ValidateInput from "../../module/ValidateInput";
 import { decodeJWT } from "../../module/JWT";
 
 import { log } from "console";
+import { PrismaClient } from "@prisma/client";
 
-export default async function isLogin(req:Request, res:Response, next:NextFunction) {
+export default async function isLogin(req: Request, res: Response, next: NextFunction) {
     try {
         const authenHeader = req.headers.authorization;
         if (!authenHeader) {
             res.json({ code: 400, msg: `ข้อมูลไม่ถูกต้อง` });
             return;
         }
-        
+
         const authenString = authenHeader.split(' ');
         if (authenString.length !== 2) {
             res.json({ code: 400, msg: `ข้อมูลไม่ถูกต้อง` });
@@ -32,6 +33,17 @@ export default async function isLogin(req:Request, res:Response, next:NextFuncti
         } else
         if (new Date() >= new Date(data.exp)) {
             res.json({ code: 400, msg: `ข้อมูลไม่ถูกต้อง` });
+            return;
+        }
+        
+        const prisma = new PrismaClient();
+        const userData = await prisma.user.findUnique({
+            where: {
+                user_id: data.user_id,
+            }
+        });
+        if (!userData) {
+            res.json({ code: 400, msg: `ไม่มีบัญชีผู้ใช้งานนี้` });
             return;
         }
 

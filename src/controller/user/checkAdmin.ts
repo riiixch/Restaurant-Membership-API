@@ -6,7 +6,7 @@ import { decodeJWT } from "../../module/JWT";
 
 import { log } from "console";
 
-export default async function getData(req: Request, res:Response) {
+export default async function checkAdmin(req: Request, res: Response) {
     try {
         const token = req.headers.authorization?.split(' ')[1];
         if (!token || !ValidateInput(token, 'text')) {
@@ -28,19 +28,7 @@ export default async function getData(req: Request, res:Response) {
             return;
         }
 
-        const user = {
-            user_id: userData.user_id,
-            username: userData.username,
-            email: userData.email,
-            phone: userData.phone,
-            fname: userData.fname,
-            lname: userData.lname,
-            profile: userData.profile,
-            role: userData.role,
-            createAt: userData.createAt,
-        }
-
-        res.json({ code: 200, msg: `ดึงข้อมูลผู้ใช้งานสำเร็จ`, user: user });
+        res.json({ code: 200, msg: `คุณมีสิทธิ์เป็นแอดมิน`, isAdmin: userData.role === 'admin' });
         return;
     } catch (error) {
         log(`เกิดข้อผิดพลาด: ${error}`);
