@@ -8,5 +8,6 @@ const userRouter = express.Router();
 userRouter.get('/data', getData);
 userRouter.get('/isadmin', checkAdmin);
 userRouter.get('/point', getPoint);
+userRouter.get('/transaction', getPoint);
 
 export default userRouter;

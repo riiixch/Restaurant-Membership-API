@@ -1,0 +1,47 @@
+import { Request, Response } from "express";
+import { PrismaClient } from "@prisma/client";
+
+import { log } from "console";
+import ValidateInput from "../../module/ValidateInput";
+
+export default async function addPoint(req: Request, res: Response) {
+    try {
+        const { user_id, point } = req.body;
+
+        if (!ValidateInput(user_id, 'text')) {
+            res.json({ code: 400, msg: `กรุณากรอก ไอดีผู้ใช้งาน` });
+            return;
+        } else
+        if (!ValidateInput(point, 'number')) {
+            res.json({ code: 400, msg: `กรุณากรอก จำนวนพ้อย` });
+            return;
+        }
+
+        const prisma = new PrismaClient();
+        const userData = await prisma.user.findUnique({
+            where: {
+                user_id: user_id,
+            }
+        });
+        if (!userData) {
+            res.json({ code: 400, msg: `ไม่มีบัญชีผู้ใช้งานนี้` });
+            return;
+        }
+
+        prisma.transaction.create({
+            data: {
+                user_id: userData.user_id,
+                tra_point: point,
+                tra_type: 'earned',
+                tra_descript: `รับพร้อมจากการเพิ่มให้ของ Admin +${point} Point`,
+            }
+        });
+        
+        res.json({ code: 200, msg: `เพิ่มพ้อยสำเร็จ ${point} พ้อย` });
+        return;
+    } catch (error) {
+        log(`เกิดข้อผิดพลาด: ${error}`);
+        res.json({ code: 400, msg: `เพิ่มพ้อยไม่สำเร็จ` });
+        return;
+    }
+}

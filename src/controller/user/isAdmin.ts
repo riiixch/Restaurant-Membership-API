@@ -26,6 +26,10 @@ export default async function isAdmin(req: Request, res: Response, next:NextFunc
         if (!userData) {
             res.json({ code: 400, msg: `ไม่มีบัญชีผู้ใช้งานนี้` });
             return;
+        } else
+        if (userData.role !== 'admin') {
+            res.json({ code: 400, msg: `คุณไม่มีสิทธิ์ของแอดมิน` });
+            return;
         }
 
         next();

@@ -1,21 +1,17 @@
 import { Request, Response } from "express";
 import { PrismaClient } from "@prisma/client";
 
-import ValidateInput from "../../module/ValidateInput";
-import { decodeJWT } from "../../module/JWT";
+import getUserIDbyToken from "../../module/getUserIDbyToken";
 
 import { log } from "console";
 
-export default async function checkAdmin(req: Request, res: Response) {
+export default async function getTransaction(req: Request, res: Response) {
     try {
-        const token = req.headers.authorization?.split(' ')[1];
-        if (!token || !ValidateInput(token, 'text')) {
+        const user_id = await getUserIDbyToken(req);
+        if (user_id == null) {
             res.json({ code: 400, msg: `กรุณาเข้าสู่ระบบ` });
             return;
         }
-
-        const data = await decodeJWT(token);
-        const user_id = data.user_id;
 
         const prisma = new PrismaClient();
         const userData = await prisma.user.findUnique({
@@ -28,11 +24,17 @@ export default async function checkAdmin(req: Request, res: Response) {
             return;
         }
 
-        res.json({ code: 200, msg: `คุณมีสิทธิ์ของแอดมิน`, isAdmin: userData.role === 'admin' });
+        const transactionData = await prisma.transaction.findMany({
+            where: {
+                user_id: user_id,
+            }
+        });
+
+        res.json({ code: 200, msg: `ดึงค่ารายการพ้อยสำเร็จ`, transactionData: transactionData });
         return;
     } catch (error) {
         log(`เกิดข้อผิดพลาด: ${error}`);
-        res.json({ code: 400, msg: `ข้อมูลไม่ถูกต้อง` });
+        res.json({ code: 400, msg: `ดึงค่ารายการพ้อยไม่สำเร็จ` });
         return;
     }
 }

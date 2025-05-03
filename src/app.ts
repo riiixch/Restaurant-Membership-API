@@ -2,9 +2,13 @@ import express from 'express';
 import fileUpload from 'express-fileupload';
 import cors from 'cors';
 import helmet from 'helmet';
-import authRouter from './router/auth';
+
 import isLogin from './controller/user/isLogin';
+import isAdmin from './controller/user/isAdmin';
+
+import authRouter from './router/auth';
 import userRouter from './router/user';
+import adminRouter from './router/admin';
 
 const app = express();
 
@@ -71,5 +75,8 @@ app.use('/api/auth', authRouter);
 
 app.use('/api/user', isLogin);
 app.use('/api/user', userRouter);
+
+app.use('/api/user', isAdmin);
+app.use('/api/user', adminRouter);
 
 export default app;
