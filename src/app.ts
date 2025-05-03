@@ -9,6 +9,8 @@ import isAdmin from './controller/user/isAdmin';
 import authRouter from './router/auth';
 import userRouter from './router/user';
 import adminRouter from './router/admin';
+import path from 'path';
+import imageUserPath from './module/imageUserPath';
 
 const app = express();
 
@@ -76,7 +78,9 @@ app.use('/api/auth', authRouter);
 app.use('/api/user', isLogin);
 app.use('/api/user', userRouter);
 
-app.use('/api/user', isAdmin);
-app.use('/api/user', adminRouter);
+app.use('/api/admin', isAdmin);
+app.use('/api/admin', adminRouter);
+
+app.use('/image/user', express.static(path.join(imageUserPath)));
 
 export default app;

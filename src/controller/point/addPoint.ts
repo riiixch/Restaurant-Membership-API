@@ -28,12 +28,12 @@ export default async function addPoint(req: Request, res: Response) {
             return;
         }
 
-        prisma.transaction.create({
+        await prisma.transaction.create({
             data: {
                 user_id: userData.user_id,
                 tra_point: point,
                 tra_type: 'earned',
-                tra_descript: `รับพร้อมจากการเพิ่มให้ของ Admin +${point} Point`,
+                tra_descript: `รับพ้อยจากแอดมิน`,
             }
         });
         

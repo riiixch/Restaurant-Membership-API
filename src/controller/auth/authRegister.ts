@@ -1,9 +1,8 @@
-import { config } from 'dotenv';
-config();
 import { Request, Response } from "express";
 import { PrismaClient } from "@prisma/client";
 import bcrypt from 'bcrypt';
 
+import config from "../../module/config";
 import ValidateInput from "../../module/ValidateInput";
 import { encodeJWT } from "../../module/JWT";
 
@@ -75,7 +74,7 @@ export default async function authRegister(req:Request, res:Response) {
             return;
         }
 
-        const saltRound = Number(process.env.SALT_ROUND) > 0 ? Number(process.env.SALT_ROUND) : 12;
+        const saltRound = config.SALT_ROUND;
         const hashPassword = await bcrypt.hash(password, saltRound);
 
         const newUser = await prisma.user.create({

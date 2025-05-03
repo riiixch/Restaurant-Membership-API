@@ -1,9 +1,8 @@
-import { config } from 'dotenv';
-config();
 import jwt from "jsonwebtoken";
-import { RandomID } from "./RandomID";
 
-const jwt_key = process.env.JWT_SECRET || RandomID(256);
+import config from "./config";
+
+const jwt_key = config.JWT_SECRET;
 
 export async function encodeJWT(token: Object) {
     try {
