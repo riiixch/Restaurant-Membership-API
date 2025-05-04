@@ -33,7 +33,7 @@ model Transaction {
 model Reward {
     rew_id       String   @id @default(auto()) @map("_id") @db.ObjectId
     rew_name     String
-    rew_cost     Float
+    rew_point    Float
     rew_descript String
     rew_img      String[]
     createAt     DateTime @default(now())

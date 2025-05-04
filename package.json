@@ -4,10 +4,10 @@
     "description": "",
     "main": "index.js",
     "scripts": {
-        "start": "node dist/app.js",
+        "start": "node dist/server.js",
         "build": "npx tsc",
         "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
-        "prisma:generate": "prisma generate",
+        "prisma:gen": "prisma generate",
         "prisma:push": "prisma db push",
         "prisma:studio": "prisma studio",
         "lint": "eslint src --ext .ts",
