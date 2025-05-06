@@ -2,6 +2,7 @@ import express from 'express';
 import fileUpload from 'express-fileupload';
 import cors from 'cors';
 import helmet from 'helmet';
+import path from 'path';
 
 import isLogin from './controller/user/isLogin';
 import isAdmin from './controller/user/isAdmin';
@@ -9,8 +10,9 @@ import isAdmin from './controller/user/isAdmin';
 import authRouter from './router/auth';
 import userRouter from './router/user';
 import adminRouter from './router/admin';
-import path from 'path';
+
 import imageUserPath from './module/imageUserPath';
+import imageRewardPath from './module/imageRewardPath';
 
 const app = express();
 
@@ -82,5 +84,6 @@ app.use('/api/admin', isAdmin);
 app.use('/api/admin', adminRouter);
 
 app.use('/image/user', express.static(path.join(imageUserPath)));
+app.use('/image/reward', express.static(path.join(imageRewardPath)));
 
 export default app;

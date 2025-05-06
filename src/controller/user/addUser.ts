@@ -99,7 +99,7 @@ export default async function addUser(req:Request, res:Response) {
                     }
                 });
             }
-    
+
             res.json({ code: 200, msg: `เพิ่มสมาชิกสำเร็จ` });
             return;
     } catch (error) {
