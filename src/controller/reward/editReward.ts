@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import fileUpload from "express-fileupload";
+import fileUpload, { FileArray } from "express-fileupload";
 import { PrismaClient } from "@prisma/client";
 import path from "path";
 
@@ -13,16 +13,10 @@ export default async function editReward(req: Request, res: Response) {
     try {
         const { rew_id, rew_name, rew_point, rew_descript, rew_img } = req.body;
 
-        const _rew_img = String(rew_img).split(' ');
-        let file_name;
-        let i = 0;
-        do {
-            i = i + 1;
-            file_name = rew_id + '_' + i;
-        } while (_rew_img.includes(file_name + '.png'));
-
-        log(req.body);
-        log(file_name);
+        let _rew_img = String(rew_img).split(' ');
+        if (_rew_img[0] === '') {
+            _rew_img = [];
+        }
 
         if (!ValidateInput(rew_id, 'text')) {
             res.json({ code: 400, msg: `กรุณากรอก ไอดีของรางวัล` });
@@ -41,7 +35,7 @@ export default async function editReward(req: Request, res: Response) {
             return;
         }
         if (!req.files && _rew_img.length < 1) {
-            res.json({ code: 400, msg: `กรุณากรอก รูปภาพ` });
+            res.json({ code: 400, msg: `กรุณาเลือก รูปภาพ` });
             return;
         }
 
@@ -55,6 +49,29 @@ export default async function editReward(req: Request, res: Response) {
             res.json({ code: 400, msg: `ไม่พบของรางวัลในระบบ` });
             return;
         }
+
+        if (req.files) {
+            const files = req.files;
+            const pathImages = [ 'image_1', 'image_2', 'image_3', 'image_4', 'image_5' ];
+            for (const imgKey of pathImages) {
+                if (files[imgKey]) {
+                    const fileImage = files[imgKey] as fileUpload.UploadedFile;
+                    let file_name;
+                    let i = 0;
+                    do {
+                        i = i + 1;
+                        file_name = rew_id + '_' + i;
+                    } while (_rew_img.includes(file_name + '.png'));
+                    const imageData = await convertToPng({
+                        imageBuffer: fileImage.data,
+                        outputPath: path.join(imageRewardPath, file_name),
+                        quality: 80,
+                    });
+                    _rew_img.push(imageData.fileName);
+                }
+            }
+        }
+
         await prisma.reward.update({
             where: {
                 rew_id: rew_id,
@@ -66,171 +83,6 @@ export default async function editReward(req: Request, res: Response) {
                 rew_img: _rew_img,
             }
         });
-
-        if (req.files && req.files.image_1) {
-            const image = req.files.image_1 as fileUpload.UploadedFile;
-            const rewardData = await prisma.reward.findUnique({
-                where: {
-                    rew_id: rew_id,
-                }
-            });
-            if (!rewardData) {
-                res.json({ code: 400, msg: `ไม่พบของรางวัลในระบบ` });
-                return;
-            }
-            let file_name;
-            let i = 0;
-            do {
-                i = i + 1;
-                file_name = rew_id + '_' + i;
-            } while (_rew_img.includes(file_name + '.png'));
-            const imageData = await convertToPng({
-                imageBuffer: image.data,
-                outputPath: path.join(imageRewardPath, file_name),
-                quality: 80,
-            });
-            rewardData.rew_img.push(imageData.fileName);
-            await prisma.reward.update({
-                where: {
-                    rew_id: rew_id,
-                },
-                data: {
-                    rew_img: rewardData.rew_img,
-                }
-            });
-        }
-
-        if (req.files && req.files.image_2) {
-            const image = req.files.image_2 as fileUpload.UploadedFile;
-            const rewardData = await prisma.reward.findUnique({
-                where: {
-                    rew_id: rew_id,
-                }
-            });
-            if (!rewardData) {
-                res.json({ code: 400, msg: `ไม่พบของรางวัลในระบบ` });
-                return;
-            }
-            let file_name;
-            let i = 0;
-            do {
-                i = i + 1;
-                file_name = rew_id + '_' + i;
-            } while (_rew_img.includes(file_name + '.png'));
-            const imageData = await convertToPng({
-                imageBuffer: image.data,
-                outputPath: path.join(imageRewardPath, file_name),
-                quality: 80,
-            });
-            rewardData.rew_img.push(imageData.fileName);
-            await prisma.reward.update({
-                where: {
-                    rew_id: rew_id,
-                },
-                data: {
-                    rew_img: rewardData.rew_img,
-                }
-            });
-        }
-
-        if (req.files && req.files.image_3) {
-            const image = req.files.image_3 as fileUpload.UploadedFile;
-            const rewardData = await prisma.reward.findUnique({
-                where: {
-                    rew_id: rew_id,
-                }
-            });
-            if (!rewardData) {
-                res.json({ code: 400, msg: `ไม่พบของรางวัลในระบบ` });
-                return;
-            }
-            let file_name;
-            let i = 0;
-            do {
-                i = i + 1;
-                file_name = rew_id + '_' + i;
-            } while (_rew_img.includes(file_name + '.png'));
-            const imageData = await convertToPng({
-                imageBuffer: image.data,
-                outputPath: path.join(imageRewardPath, file_name),
-                quality: 80,
-            });
-            rewardData.rew_img.push(imageData.fileName);
-            await prisma.reward.update({
-                where: {
-                    rew_id: rew_id,
-                },
-                data: {
-                    rew_img: rewardData.rew_img,
-                }
-            });
-        }
-
-        if (req.files && req.files.image_4) {
-            const image = req.files.image_4 as fileUpload.UploadedFile;
-            const rewardData = await prisma.reward.findUnique({
-                where: {
-                    rew_id: rew_id,
-                }
-            });
-            if (!rewardData) {
-                res.json({ code: 400, msg: `ไม่พบของรางวัลในระบบ` });
-                return;
-            }
-            let file_name;
-            let i = 0;
-            do {
-                i = i + 1;
-                file_name = rew_id + '_' + i;
-            } while (_rew_img.includes(file_name + '.png'));
-            const imageData = await convertToPng({
-                imageBuffer: image.data,
-                outputPath: path.join(imageRewardPath, file_name),
-                quality: 80,
-            });
-            rewardData.rew_img.push(imageData.fileName);
-            await prisma.reward.update({
-                where: {
-                    rew_id: rew_id,
-                },
-                data: {
-                    rew_img: rewardData.rew_img,
-                }
-            });
-        }
-
-        if (req.files && req.files.image_5) {
-            const image = req.files.image_5 as fileUpload.UploadedFile;
-            const rewardData = await prisma.reward.findUnique({
-                where: {
-                    rew_id: rew_id,
-                }
-            });
-            if (!rewardData) {
-                res.json({ code: 400, msg: `ไม่พบของรางวัลในระบบ` });
-                return;
-            }
-            let file_name;
-            let i = 0;
-            do {
-                i = i + 1;
-                file_name = rew_id + '_' + i;
-            } while (_rew_img.includes(file_name + '.png'));
-            const imageData = await convertToPng({
-                imageBuffer: image.data,
-                outputPath: path.join(imageRewardPath, file_name),
-                quality: 80,
-            });
-            rewardData.rew_img.push(imageData.fileName);
-            await prisma.reward.update({
-                where: {
-                    rew_id: rew_id,
-                },
-                data: {
-                    rew_img: rewardData.rew_img,
-                }
-            });
-        }
         
         res.json({ code: 200, msg: `แก้ไขของรางวัลสำเร็จ` });
         return;

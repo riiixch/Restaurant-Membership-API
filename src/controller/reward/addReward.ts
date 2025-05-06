@@ -26,7 +26,7 @@ export default async function addReward(req: Request, res: Response) {
             return;
         } else
         if (!req.files || !req.files.image_1) {
-            res.json({ code: 400, msg: `กรุณากรอก ใส่รูปภาพมาอย่างน้อย 1 รูปภาพ` });
+            res.json({ code: 400, msg: `กรุณาเลือก รูปภาพอย่างน้อย 1 รูปภาพ` });
             return;
         }
 
@@ -39,132 +39,37 @@ export default async function addReward(req: Request, res: Response) {
             }
         });
 
-        if (req.files && req.files.image_1) {
-            const image = req.files.image_1 as fileUpload.UploadedFile;
-            const imageData = await convertToPng({
-                imageBuffer: image.data,
-                outputPath: path.join(imageRewardPath, newReward.rew_id + '_1'),
-                quality: 80,
-            });
-            const rewardData = await prisma.reward.findUnique({
-                where: {
-                    rew_id: newReward.rew_id,
+        let rew_img:string[] = [];
+        
+        if (req.files) {
+            const files = req.files;
+            const pathImages = [ 'image_1', 'image_2', 'image_3', 'image_4', 'image_5' ];
+            for (const imgKey of pathImages) {
+                if (files[imgKey]) {
+                    const fileImage = files[imgKey] as fileUpload.UploadedFile;
+                    let file_name;
+                    let i = 0;
+                    do {
+                        i = i + 1;
+                        file_name = newReward.rew_id + '_' + i;
+                    } while (rew_img.includes(file_name + '.png'));
+                    const imageData = await convertToPng({
+                        imageBuffer: fileImage.data,
+                        outputPath: path.join(imageRewardPath, file_name),
+                        quality: 80,
+                    });
+                    rew_img.push(imageData.fileName);
                 }
-            });
-            if (!rewardData) {
-                return;
             }
-            rewardData.rew_img.push(imageData.fileName);
-            await prisma.reward.update({
-                where: {
-                    rew_id: newReward.rew_id,
-                },
-                data: {
-                    rew_img: rewardData.rew_img,
-                }
-            });
         }
 
-        if (req.files && req.files.image_2) {
-            const image = req.files.image_2 as fileUpload.UploadedFile;
-            const imageData = await convertToPng({
-                imageBuffer: image.data,
-                outputPath: path.join(imageRewardPath, newReward.rew_id + '_2'),
-                quality: 80,
-            });
-            const rewardData = await prisma.reward.findUnique({
-                where: {
-                    rew_id: newReward.rew_id,
-                }
-            });
-            if (!rewardData) {
-                return;
-            }
-            rewardData.rew_img.push(imageData.fileName);
+        if (rew_img && rew_img.length > 0) {
             await prisma.reward.update({
                 where: {
                     rew_id: newReward.rew_id,
                 },
                 data: {
-                    rew_img: rewardData.rew_img,
-                }
-            });
-        }
-
-        if (req.files && req.files.image_3) {
-            const image = req.files.image_3 as fileUpload.UploadedFile;
-            const imageData = await convertToPng({
-                imageBuffer: image.data,
-                outputPath: path.join(imageRewardPath, newReward.rew_id + '_3'),
-                quality: 80,
-            });
-            const rewardData = await prisma.reward.findUnique({
-                where: {
-                    rew_id: newReward.rew_id,
-                }
-            });
-            if (!rewardData) {
-                return;
-            }
-            rewardData.rew_img.push(imageData.fileName);
-            await prisma.reward.update({
-                where: {
-                    rew_id: newReward.rew_id,
-                },
-                data: {
-                    rew_img: rewardData.rew_img,
-                }
-            });
-        }
-
-        if (req.files && req.files.image_4) {
-            const image = req.files.image_4 as fileUpload.UploadedFile;
-            const imageData = await convertToPng({
-                imageBuffer: image.data,
-                outputPath: path.join(imageRewardPath, newReward.rew_id + '_4'),
-                quality: 80,
-            });
-            const rewardData = await prisma.reward.findUnique({
-                where: {
-                    rew_id: newReward.rew_id,
-                }
-            });
-            if (!rewardData) {
-                return;
-            }
-            rewardData.rew_img.push(imageData.fileName);
-            await prisma.reward.update({
-                where: {
-                    rew_id: newReward.rew_id,
-                },
-                data: {
-                    rew_img: rewardData.rew_img,
-                }
-            });
-        }
-
-        if (req.files && req.files.image_5) {
-            const image = req.files.image_5 as fileUpload.UploadedFile;
-            const imageData = await convertToPng({
-                imageBuffer: image.data,
-                outputPath: path.join(imageRewardPath, newReward.rew_id + '_5'),
-                quality: 80,
-            });
-            const rewardData = await prisma.reward.findUnique({
-                where: {
-                    rew_id: newReward.rew_id,
-                }
-            });
-            if (!rewardData) {
-                return;
-            }
-            rewardData.rew_img.push(imageData.fileName);
-            await prisma.reward.update({
-                where: {
-                    rew_id: newReward.rew_id,
-                },
-                data: {
-                    rew_img: rewardData.rew_img,
+                    rew_img: rew_img,
                 }
             });
         }
