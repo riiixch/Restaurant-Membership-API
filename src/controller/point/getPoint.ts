@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
-import { PrismaClient } from "@prisma/client";
 
 import getUserIDbyToken from "../../module/getUserIDbyToken";
+import getAllPoint from "../utils/getAllPoint";
 
 import { log } from "console";
 
@@ -13,25 +13,13 @@ export default async function getPoint(req:Request, res:Response) {
             return;
         }
 
-        const prisma = new PrismaClient();
-        const userData = await prisma.user.findUnique({
-            where: {
-                user_id: user_id,
-            }
-        });
-        if (!userData) {
-            res.json({ code: 400, msg: `ไม่มีบัญชีผู้ใช้งานนี้` });
+        const getPointData = await getAllPoint(user_id);
+        if (getPointData.code !== 200) {
+            res.json(getPointData);
             return;
         }
-
-        const pointData = await prisma.transaction.findMany({
-            where: {
-                user_id: user_id,
-            }
-        });
-        const point = pointData.reduce((a, b) => a + b.tra_point, 0);
         
-        res.json({ code: 200, msg: `ดึงค่าพ้อยสำเร็จ`, user_id: user_id, point: point });
+        res.json({ code: 200, msg: `ดึงค่าพ้อยสำเร็จ`, point: getPointData.point });
         return;
     } catch (error) {
         log(`เกิดข้อผิดพลาด: ${error}`);

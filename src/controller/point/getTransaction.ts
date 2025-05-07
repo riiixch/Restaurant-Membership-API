@@ -27,7 +27,10 @@ export default async function getTransaction(req: Request, res: Response) {
         const transactionData = await prisma.transaction.findMany({
             where: {
                 user_id: user_id,
-            }
+            },
+            orderBy: {
+                createAt: 'desc',
+            },
         });
 
         res.json({ code: 200, msg: `ดึงค่ารายการพ้อยสำเร็จ`, transactionData: transactionData });

@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
-import { PrismaClient } from "@prisma/client";
 import bcrypt from 'bcrypt';
 
 import ValidateInput from "../../module/ValidateInput";
+import prismaClient from "../../module/prismaClient";
 import { encodeJWT } from "../../module/JWT";
 
 import { log } from "console";
@@ -20,7 +20,7 @@ export default async function authLogin(req:Request, res:Response) {
             return;
         }
 
-        const prisma = new PrismaClient()
+        const prisma = await prismaClient();
         const user = await prisma.user.findMany({
             where: {
                 OR: [
@@ -54,7 +54,7 @@ export default async function authLogin(req:Request, res:Response) {
 
         const token = await encodeJWT(data);
 
-        res.json({ code: 200, msg: `เข้าสู่ระบบสำเร็จ!`, token: token });
+        res.json({ code: 200, msg: `เข้าสู่ระบบสำเร็จ!`, token: token, user_id: user[0].user_id });
         return;
     } catch (error) {
         log(`เกิดข้อผิดพลาด: ${error}`);

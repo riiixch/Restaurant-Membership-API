@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
-import { PrismaClient } from "@prisma/client";
 import bcrypt from 'bcrypt';
 
 import config from "../../module/config";
 import ValidateInput from "../../module/ValidateInput";
+import prismaClient from "../../module/prismaClient";
 import { encodeJWT } from "../../module/JWT";
 
 import { log } from "console";
@@ -45,7 +45,7 @@ export default async function authRegister(req:Request, res:Response) {
             return;
         }
 
-        const prisma = new PrismaClient();
+        const prisma = await prismaClient();
         const usernameExiting = await prisma.user.findUnique({
             where: {
                 username: username,
@@ -95,7 +95,7 @@ export default async function authRegister(req:Request, res:Response) {
 
         const token = await encodeJWT(data);
 
-        res.json({ code: 200, msg: `สมัครสมาชิกสำเร็จ!`, token: token });
+        res.json({ code: 200, msg: `สมัครสมาชิกสำเร็จ!`, token: token, uesr_id: newUser.user_id });
         return;
     } catch (error) {
         log(`เกิดข้อผิดพลาด: ${error}`);
