@@ -1,8 +1,7 @@
 import sharp from 'sharp';
 import fs from 'fs/promises';
 import path from 'path';
-
-import { log } from "console";
+import { log } from 'console';
 
 interface ConvertImageOptions {
   imageBuffer: Buffer; // Buffer ของไฟล์ภาพ
@@ -10,24 +9,35 @@ interface ConvertImageOptions {
   quality?: number; // คุณภาพของ .png (0-100, default: 80)
 }
 
-export default async function convertToPng(options: ConvertImageOptions): Promise<{ fileName: string; filePath: string }> {
+export async function convertToPng(options: ConvertImageOptions): Promise<{ fileName: string; filePath: string }> {
   const { imageBuffer, outputPath, quality = 80 } = options;
 
   try {
-    if (!Buffer.isBuffer(imageBuffer)) {
-      throw new Error('Invalid image buffer');
+    // ตรวจสอบว่า imageBuffer เป็น Buffer และไม่ว่าง
+    if (!Buffer.isBuffer(imageBuffer) || imageBuffer.length === 0) {
+      throw new Error('Invalid or empty image buffer');
     }
 
+    // ตรวจสอบว่า sharp รองรับ input format
+    const metadata = await sharp(imageBuffer).metadata();
+    if (!metadata.format) {
+      throw new Error('Unsupported image format');
+    }
+
+    // สร้าง output directory ถ้ายังไม่มี
     const outputDir = path.dirname(outputPath);
     await fs.mkdir(outputDir, { recursive: true });
 
+    // สร้างชื่อไฟล์ (ถ้า outputPath ไม่มีชื่อไฟล์ที่ชัดเจน)
     const fileName = path.basename(outputPath, path.extname(outputPath)) || `converted_${Date.now()}`;
     const finalFilePath = path.join(outputDir, `${fileName}.png`);
 
+    // แปลงภาพเป็น PNG ด้วย sharp
     const pngBuffer = await sharp(imageBuffer)
-      .png({ quality })
+      .png({ quality: Math.max(0, Math.min(100, quality)) }) // จำกัด quality ระหว่าง 0-100
       .toBuffer();
 
+    // บันทึกไฟล์
     await fs.writeFile(finalFilePath, pngBuffer);
 
     return {
@@ -41,11 +51,15 @@ export default async function convertToPng(options: ConvertImageOptions): Promis
 
 async function main() {
   try {
-    const imageBuffer = await fs.readFile(path.join(__dirname, 'input.jpg'));
+    // ตรวจสอบว่าไฟล์ input มีอยู่จริง
+    const inputPath = path.join(__dirname, 'input.jpg');
+    await fs.access(inputPath); // จะ throw error ถ้าไฟล์ไม่มี
+
+    const imageBuffer = await fs.readFile(inputPath);
 
     const result = await convertToPng({
       imageBuffer,
-      outputPath: path.join(__dirname, 'uploads/output.png'),
+      outputPath: path.join(__dirname, 'Uploads/output.png'),
       quality: 90,
     });
 
