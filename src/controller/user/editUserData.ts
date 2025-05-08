@@ -5,7 +5,7 @@ import path from "path";
 import imageUserPath from "../../module/imageUserPath";
 import getUserIDbyToken from "../../module/getUserIDbyToken";
 import prismaClient from "../../module/prismaClient";
-import convertToPng from "../../module/convertToPng";
+import { convertToPng } from "../../module/convertToPng";
 
 import { log } from "console";
 
