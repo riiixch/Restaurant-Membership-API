@@ -21,7 +21,10 @@ export default async function getRedeemUser(req:Request, res:Response) {
             },
             include: {
                 reward: true,
-            }
+            },
+            orderBy: {
+                createAt: 'desc',
+            },
         });
 
         res.json({ code: 200, msg: `ดึงรายการแลกรางวัลสำเร็จ`, redeemData: redeemData });

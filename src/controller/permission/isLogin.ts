@@ -1,10 +1,10 @@
 import { Request, Response, NextFunction } from "express";
 
 import ValidateInput from "../../module/ValidateInput";
+import prismaClient from "../../module/prismaClient";
 import { decodeJWT } from "../../module/JWT";
 
 import { log } from "console";
-import { PrismaClient } from "@prisma/client";
 
 export default async function isLogin(req: Request, res: Response, next: NextFunction) {
     try {
@@ -36,7 +36,7 @@ export default async function isLogin(req: Request, res: Response, next: NextFun
             return;
         }
         
-        const prisma = new PrismaClient();
+        const prisma = await prismaClient();
         const userData = await prisma.user.findUnique({
             where: {
                 user_id: data.user_id,

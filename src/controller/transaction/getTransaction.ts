@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
-import { PrismaClient } from "@prisma/client";
 
 import getUserIDbyToken from "../../module/getUserIDbyToken";
+import prismaClient from "../../module/prismaClient";
 
 import { log } from "console";
 
@@ -13,7 +13,7 @@ export default async function getTransaction(req: Request, res: Response) {
             return;
         }
 
-        const prisma = new PrismaClient();
+        const prisma = await prismaClient();
         const userData = await prisma.user.findUnique({
             where: {
                 user_id: user_id,

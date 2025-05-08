@@ -1,12 +1,12 @@
 import { Request, Response } from "express";
-import { PrismaClient } from "@prisma/client";
 
 import ValidateInput from "../../module/ValidateInput";
+import prismaClient from "../../module/prismaClient";
 import { decodeJWT } from "../../module/JWT";
 
 import { log } from "console";
 
-export default async function getData(req: Request, res:Response) {
+export default async function getUserData(req: Request, res:Response) {
     try {
         const token = req.headers.authorization?.split(' ')[1];
         if (!token || !ValidateInput(token, 'text')) {
@@ -17,7 +17,7 @@ export default async function getData(req: Request, res:Response) {
         const data = await decodeJWT(token);
         const user_id = data.user_id;
 
-        const prisma = new PrismaClient();
+        const prisma = await prismaClient();
         const userData = await prisma.user.findUnique({
             where: {
                 user_id: user_id,

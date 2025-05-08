@@ -1,15 +1,15 @@
 import { Request, Response } from "express";
-import { PrismaClient } from "@prisma/client";
 
 import getUserIDbyToken from "../../module/getUserIDbyToken";
 import ValidateInput from "../../module/ValidateInput";
+import prismaClient from "../../module/prismaClient";
 import { RandomID } from "../../module/RandomID";
 
 import getAllPoint from "../utils/getAllPoint";
 
 import { log } from "console";
 
-export default async function redeemReward(req: Request, res: Response) {
+export default async function useRedeemReward(req: Request, res: Response) {
     try {
         const { rew_id } = req.body;
         const user_id = await getUserIDbyToken(req);
@@ -23,7 +23,7 @@ export default async function redeemReward(req: Request, res: Response) {
             return;
         }
 
-        const prisma = new PrismaClient();
+        const prisma = await prismaClient();
         const userData = await prisma.user.findUnique({
             where: {
                 user_id: user_id,

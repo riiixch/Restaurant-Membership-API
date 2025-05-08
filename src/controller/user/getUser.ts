@@ -1,11 +1,12 @@
 import { Request, Response } from "express";
-import { PrismaClient } from "@prisma/client";
+
+import prismaClient from "../../module/prismaClient";
 
 import { log } from "console";
 
 export default async function getUser(req:Request, res:Response) {
     try {
-        const prisma = new PrismaClient();
+        const prisma = await prismaClient();
         const userData = await prisma.user.findMany({
             select: {
                 user_id: true,

@@ -1,23 +1,20 @@
 import { Request, Response } from "express";
-import { PrismaClient } from "@prisma/client";
 
+import getUserIDbyToken from "../../module/getUserIDbyToken";
 import ValidateInput from "../../module/ValidateInput";
-import { decodeJWT } from "../../module/JWT";
+import prismaClient from "../../module/prismaClient";
 
 import { log } from "console";
 
 export default async function checkAdmin(req: Request, res: Response) {
     try {
-        const token = req.headers.authorization?.split(' ')[1];
-        if (!token || !ValidateInput(token, 'text')) {
+        const user_id = await getUserIDbyToken(req);
+        if (!user_id || !ValidateInput(user_id, 'text')) {
             res.json({ code: 400, msg: `กรุณาเข้าสู่ระบบ` });
             return;
         }
 
-        const data = await decodeJWT(token);
-        const user_id = data.user_id;
-
-        const prisma = new PrismaClient();
+        const prisma = await prismaClient();
         const userData = await prisma.user.findUnique({
             where: {
                 user_id: user_id,

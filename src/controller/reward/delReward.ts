@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
-import { PrismaClient } from "@prisma/client";
 
 import ValidateInput from "../../module/ValidateInput";
+import prismaClient from "../../module/prismaClient";
 
 import { log } from "console";
 
@@ -14,7 +14,7 @@ export default async function delReward(req: Request, res: Response) {
             return;
         }
 
-        const prisma = new PrismaClient();
+        const prisma = await prismaClient();
         await prisma.reward.delete({
             where: {
                 rew_id: rew_id,

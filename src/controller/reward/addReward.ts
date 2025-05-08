@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
 import fileUpload from "express-fileupload";
-import { PrismaClient } from "@prisma/client";
 import path from "path";
 
 import ValidateInput from "../../module/ValidateInput";
+import prismaClient from "../../module/prismaClient";
 import imageRewardPath from "../../module/imageRewardPath";
 import convertToPng from "../../module/convertToPng";
 
@@ -30,7 +30,7 @@ export default async function addReward(req: Request, res: Response) {
             return;
         }
 
-        const prisma = new PrismaClient();
+        const prisma = await prismaClient();
         const newReward = await prisma.reward.create({
             data: {
                 rew_name: rew_name,

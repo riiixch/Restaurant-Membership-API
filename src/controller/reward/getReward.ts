@@ -1,11 +1,12 @@
 import { Request, Response } from "express";
-import { PrismaClient } from "@prisma/client";
+
+import prismaClient from "../../module/prismaClient";
 
 import { log } from "console";
 
 export default async function getReward(req:Request, res:Response) {
     try {
-        const prisma = new PrismaClient();
+        const prisma = await prismaClient();
         const rewardData = await prisma.reward.findMany();
 
         res.json({ code: 200, msg: `ดึงข้อมูลของรางวัลสำเร็จ`, rewardData: rewardData });

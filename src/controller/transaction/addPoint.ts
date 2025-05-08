@@ -1,8 +1,9 @@
 import { Request, Response } from "express";
-import { PrismaClient } from "@prisma/client";
+
+import ValidateInput from "../../module/ValidateInput";
+import prismaClient from "../../module/prismaClient";
 
 import { log } from "console";
-import ValidateInput from "../../module/ValidateInput";
 
 export default async function addPoint(req: Request, res: Response) {
     try {
@@ -17,7 +18,7 @@ export default async function addPoint(req: Request, res: Response) {
             return;
         }
 
-        const prisma = new PrismaClient();
+        const prisma = await prismaClient();
         const userData = await prisma.user.findUnique({
             where: {
                 user_id: user_id,

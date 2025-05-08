@@ -1,11 +1,11 @@
 import { Request, Response } from "express";
 import fileUpload from "express-fileupload";
-import { PrismaClient } from "@prisma/client";
 import bcrypt from 'bcrypt';
 import path from "path";
 
 import config from "../../module/config";
 import ValidateInput from "../../module/ValidateInput";
+import prismaClient from "../../module/prismaClient";
 import imageUserPath from "../../module/imageUserPath";
 import convertToPng from "../../module/convertToPng";
 
@@ -40,7 +40,7 @@ export default async function addUser(req:Request, res:Response) {
                 return;
             }
     
-            const prisma = new PrismaClient();
+            const prisma = await prismaClient();
             const usernameExiting = await prisma.user.findUnique({
                 where: {
                     username: username,

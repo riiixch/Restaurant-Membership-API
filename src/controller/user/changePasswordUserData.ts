@@ -1,14 +1,14 @@
 import { Request, Response } from "express";
-import { PrismaClient } from "@prisma/client";
 import bcrypt from 'bcrypt';
 
-import ValidateInput from "../../module/ValidateInput";
 import getUserIDbyToken from "../../module/getUserIDbyToken";
+import ValidateInput from "../../module/ValidateInput";
+import prismaClient from "../../module/prismaClient";
 
 import { log } from "console";
 import config from "../../module/config";
 
-export default async function changePassword(req: Request, res: Response) {
+export default async function changePasswordUserData(req: Request, res: Response) {
     try {
         const { old_password, new_password, confirm_new_password } = req.body;
 
@@ -35,7 +35,7 @@ export default async function changePassword(req: Request, res: Response) {
             return;
         }
 
-        const prisma = new PrismaClient();
+        const prisma = await prismaClient();
         const userData = await prisma.user.findUnique({
             where: {
                 user_id: user_id,

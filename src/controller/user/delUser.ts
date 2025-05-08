@@ -1,13 +1,7 @@
 import { Request, Response } from "express";
-import fileUpload from "express-fileupload";
-import { PrismaClient } from "@prisma/client";
-import bcrypt from 'bcrypt';
-import path from "path";
 
-import config from "../../module/config";
 import ValidateInput from "../../module/ValidateInput";
-import imageUserPath from "../../module/imageUserPath";
-import convertToPng from "../../module/convertToPng";
+import prismaClient from "../../module/prismaClient";
 
 import { log } from "console";
 
@@ -20,7 +14,7 @@ export default async function delUser(req: Request, res: Response) {
             return;
         }
     
-        const prisma = new PrismaClient();
+        const prisma = await prismaClient();
         const userData = await prisma.user.findUnique({
             where: {
                 user_id: user_id,

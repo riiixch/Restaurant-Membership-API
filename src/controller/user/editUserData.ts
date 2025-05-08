@@ -1,15 +1,15 @@
 import { Request, Response } from "express";
 import fileUpload from "express-fileupload";
-import { PrismaClient } from "@prisma/client";
 import path from "path";
 
 import imageUserPath from "../../module/imageUserPath";
 import getUserIDbyToken from "../../module/getUserIDbyToken";
+import prismaClient from "../../module/prismaClient";
 import convertToPng from "../../module/convertToPng";
 
 import { log } from "console";
 
-export default async function editProfile(req:Request, res:Response) {
+export default async function editUserData(req:Request, res:Response) {
     try {
         const user_id = await getUserIDbyToken(req);
         if (user_id == null) {
@@ -17,7 +17,7 @@ export default async function editProfile(req:Request, res:Response) {
             return;
         }
 
-        const prisma = new PrismaClient();
+        const prisma = await prismaClient();
         const userData = await prisma.user.findUnique({
             where: {
                 user_id: user_id,
