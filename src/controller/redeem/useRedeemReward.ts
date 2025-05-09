@@ -53,6 +53,7 @@ export default async function useRedeemReward(req: Request, res: Response) {
         const point = getPointData.point;
         if (!point || point < rewardData.rew_point) {
             res.json({ code: 400, msg: `แต้มของคุณไม่เพียงพอ` });
+            return;
         }
 
         await prisma.transaction.create({
