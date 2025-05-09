@@ -47,6 +47,8 @@ export default async function isLogin(req: Request, res: Response, next: NextFun
             return;
         }
 
+        await prisma.$disconnect();
+
         next();
     } catch (error) {
         log(`เกิดข้อผิดพลาด: ${error}`);
