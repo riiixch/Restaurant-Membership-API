@@ -5,7 +5,7 @@ import path from "path";
 import ValidateInput from "../../module/ValidateInput";
 import prismaClient from "../../module/prismaClient";
 import imageRewardPath from "../../module/imageRewardPath";
-import convertToPng from "../../module/convertToPng";
+import { convertToPng } from "../../module/convertToPng";
 
 import { log } from "console";
 

@@ -7,7 +7,7 @@ import config from "../../module/config";
 import ValidateInput from "../../module/ValidateInput";
 import prismaClient from "../../module/prismaClient";
 import imageUserPath from "../../module/imageUserPath";
-import convertToPng from "../../module/convertToPng";
+import { convertToPng } from "../../module/convertToPng";
 
 import { log } from "console";
 
