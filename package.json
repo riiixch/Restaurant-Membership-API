@@ -18,8 +18,8 @@
         "url": "git+https://github.com/riiixch/Restaurant-Membership-API.git"
     },
     "keywords": [],
-    "author": "",
-    "license": "ISC",
+    "author": "RIIIXCH",
+    "license": "MIT",
     "type": "commonjs",
     "bugs": {
         "url": "https://github.com/riiixch/Restaurant-Membership-API/issues"
